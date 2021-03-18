@@ -8,9 +8,10 @@ int main(void)
 
 	while (1)
 	{
-		HWND zoomHwnd = FindWindow(NULL, L"Enter meeting passcode");
+		HWND zoomHwnd;
 
-		if (zoomHwnd != NULL)
+		if ((zoomHwnd = FindWindow(NULL, L"Enter meeting passcode")) != NULL 
+			|| (zoomHwnd = FindWindow(NULL, L"회의 암호 입력")) != NULL)
 		{
 			printf("FindWindow success\n");
 
