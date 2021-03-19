@@ -10,15 +10,27 @@ int main(void)
 	{
 		HWND zoomHwnd;
 
-		if ((zoomHwnd = FindWindow(NULL, L"Enter meeting passcode")) != NULL 
+		if ((zoomHwnd = FindWindow(NULL, L"Enter meeting passcode")) != NULL
 			|| (zoomHwnd = FindWindow(NULL, L"회의 암호 입력")) != NULL)
 		{
 			printf("FindWindow success\n");
 
-			BOOL result = SetForegroundWindow(zoomHwnd);
-			if (!result)
+            setForegroundWindow:
 			{
-				printf("SetForegroundWindow failed, %lu\n", GetLastError());
+				int tries = 0;
+				do {
+					BOOL result = SetForegroundWindow(zoomHwnd);
+					if (result)
+					{
+						break;
+					}
+					else
+					{
+						printf("SetForegroundWindow failed, %lu\n", GetLastError());
+					}
+				} while (tries <= 3 && printf("Retrying...\n"));
+
+				if (tries >= 3) continue;
 			}
 
 			printf("SetForegroundWindow success\n");
@@ -51,6 +63,7 @@ int main(void)
 			inputs[7].type = INPUT_KEYBOARD;
 			inputs[7].ki.wVk = 'I';
 			inputs[7].ki.dwFlags = KEYEVENTF_KEYUP;
+	
 
 			inputs[8].type = INPUT_KEYBOARD;
 			inputs[8].ki.wVk = 'G';
@@ -75,6 +88,7 @@ int main(void)
 			if (uSent != ARRAYSIZE(inputs))
 			{
 				printf("SendInput failed with uSent value %ud\n", uSent);
+				continue;
 			}
 
 			printf("SendInput success\n");
@@ -83,5 +97,5 @@ int main(void)
 		Sleep(10000);
 	}
 
-    return 0;
+	return 0;
 }
